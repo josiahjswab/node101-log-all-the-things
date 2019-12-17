@@ -14,8 +14,8 @@ var log = [];
  *  req.protocol.toUpperCase was used to pass the test.
  */
 function logAllTheThings(req, res, next) {
-  
-  log = []; 
+
+  log = [];
   log.push(req.header('user-agent').replace(/,/g, ' '));
   log.push(new Date().toISOString()); 
   log.push(req.method);
@@ -24,21 +24,21 @@ function logAllTheThings(req, res, next) {
   log.push(res.statusCode);
 
   fs.appendFile(
-    'log.csv', `\n ${log.toString()}`,
+    'server/log.csv', `\n ${log.toString()}`,
     (err) => {if(err) throw err, console.log(err); else console.log("Traffic added to log.")});
   next();
 };
 
 // This console.log(log.toString()) is necessary to pass tests.
 app.get('/', (req, res) => {
-  res.send("ok");
-  console.log(log.toString()) 
+  res.status(200).send("ok");
+  console.log(log.toString());
 });
 
 // Endpoint that views log.csv.
 app.get('/logs', (req, res) => {
   csv()
-    .fromFile('./log.csv')
+    .fromFile('server/log.csv')
     .then((logData) => {
       res.status(200).send(logData);
     });
